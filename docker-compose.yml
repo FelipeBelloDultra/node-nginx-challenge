@@ -1,0 +1,39 @@
+version: "3"
+
+services:
+  mysql:
+    image: mysql:5.7
+    command: --innodb-use-native-aio=0
+    container_name: mysql
+    restart: always
+    tty: true
+    environment:
+      - MYSQL_DATABASE=fullcycle
+      - MYSQL_ROOT_PASSWORD=root
+    networks:
+      - node-app-net
+
+  node-app:
+    build:
+      context: ./app
+    container_name: node-app
+    networks:
+      - node-app-net
+    depends_on:
+      - mysql
+
+  nginx:
+    build:
+      context: ./nginx
+    container_name: nginx
+    tty: true
+    ports:
+      - "8080:80"
+    networks:
+      - node-app-net
+    depends_on:
+      - node-app
+
+networks:
+  node-app-net:
+    driver: bridge
