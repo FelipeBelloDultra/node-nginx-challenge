@@ -17,6 +17,8 @@ services:
     build:
       context: ./app
     container_name: node-app
+    volumes:
+      - ./app/:/home/node/app
     networks:
       - node-app-net
     depends_on:
